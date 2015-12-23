@@ -1,13 +1,15 @@
-
-m ib.opt import Connection, message
+from ib.opt import Connection, message
 from ib.ext.Contract import Contract
 from ib.ext.Order import Order
+import sys
+
+sys.path.append("Users/Simo/Documents/Interactive-Broker/IbPy")
 
 def make_contract(symbol, sec_type, exch, prim_exchange, curr):
         Contract.m_symbol = symbol
         Contract.m_secType = sec_type
         Contract.m_exchange = exch
-        Contract.m_primaryExch = prim_exch
+        Contract.m_primaryExch = prim_exchange
         Contract.m_currency = curr
         return Contract
 
