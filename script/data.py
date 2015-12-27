@@ -104,14 +104,14 @@ class HistoricCSVDataHandler(DataHandler):
 
 
     def _get_new_bar(self, symbol):
-    """
-        Returns the latest bar from the data feed as a tuple of
-        (sybmbol, datetime, open, low, high, close, volume).
         """
-            for b in self.symbol_data[symbol]:
-            yield tuple([symbol, datetime.datetime.strptime(b[0], '%Y-%m-%d %H:%M:%S'),
+            Returns the latest bar from the data feed as a tuple of
+            (sybmbol, datetime, open, low, high, close, volume).
+            """
+        for b in self.symbol_data[symbol]:
+            yield tuple([symbol, datetime.datetime.strptime(b[0], '%Y-%m-%d'),
                          b[1][0], b[1][1], b[1][2], b[1][3], b[1][4]])
-        
+        #used to be:%Y-%m-%d %H:%M:%S
         
         
     def get_latest_bars(self, symbol, N=1):
@@ -121,7 +121,7 @@ class HistoricCSVDataHandler(DataHandler):
             """
         try:
             bars_list = self.latest_symbol_data[symbol]
-                         except KeyError:
+        except KeyError:
             print "That symbol is not available in the historical data set."
         else:
             return bars_list[-N:]

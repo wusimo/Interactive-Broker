@@ -6,13 +6,13 @@ sys.path.append("Users/Simo/Documents/Interactive-Broker/IbPy")
 
 import event,data,strategy,portfolio,execution,time,Queue
 
-events ＝ Queue.Queue()
-events.put(MarketEvent())
-symbol_list = ["IBM"]
-bars = DataHandler(events,"",symbol_list)   #(self, events, csv_dir, symbol_list)
-strategy = Strategy(bars,events) #(self, bars, events)
-port = Portfolio(bars,events,)   #(self, bars, events, start_date, initial_capital=100000.0)
-broker = ExecutionHandler(..)
+events = Queue.Queue()
+events.put(event.MarketEvent())
+symbol_list = ["chart"]
+bars = data.HistoricCSVDataHandler(events,"../",symbol_list)   #(self, events, csv_dir, symbol_list)
+strategy = strategy.BuyAndHoldStrategy(bars,events) #(self, bars, events)
+port = portfolio.NaivePortfolio(bars,events,"12-5-2014")   #(self, bars, events, start_date, initial_capital=100000.0)
+broker = execution.SimulatedExecutionHandler(events)
 
 while True:
     # Update the bars (specific backtest code, as opposed to live trading)

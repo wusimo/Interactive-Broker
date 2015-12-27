@@ -67,22 +67,22 @@ class BuyAndHoldStrategy(Strategy):
         return bought
 
 
-def calculate_signals(self, event):
-    """
-        For "Buy and Hold" we generate a single signal per symbol
-        and then no additional signals. This means we are
-        constantly long the market from the date of strategy
-        initialisation.
-        
-        Parameters
-        event - A MarketEvent object.
+    def calculate_signals(self, event):
         """
-            if event.type == 'MARKET':
+            For "Buy and Hold" we generate a single signal per symbol
+            and then no additional signals. This means we are
+            constantly long the market from the date of strategy
+            initialisation.
+        
+            Parameters
+            event - A MarketEvent object.
+            """
+        if event.type == 'MARKET':
             for s in self.symbol_list:
                 bars = self.bars.get_latest_bars(s, N=1)
                 if bars is not None and bars != []:
                     if self.bought[s] == False:
-                        # (Symbol, Datetime, Type = LONG, SHORT or EXIT)
+                    # (Symbol, Datetime, Type = LONG, SHORT or EXIT)
                         signal = SignalEvent(bars[0][0], bars[0][1], 'LONG')
                         self.events.put(signal)
                         self.bought[s] = True

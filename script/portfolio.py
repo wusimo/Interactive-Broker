@@ -143,13 +143,13 @@ class NaivePortfolio(Portfolio):
 
 
     def update_positions_from_fill(self, fill):
-    """
-        Takes a FilltEvent object and updates the position matrix
-        to reflect the new position.
-        
-        Parameters:
-        fill - The FillEvent object to update the positions with.
         """
+            Takes a FilltEvent object and updates the position matrix
+            to reflect the new position.
+        
+            Parameters:
+            fill - The FillEvent object to update the positions with.
+            """
         # Check whether the fill is a buy or sell
         fill_dir = 0
         if fill.direction == 'BUY':
@@ -162,13 +162,13 @@ class NaivePortfolio(Portfolio):
 
 
     def update_holdings_from_fill(self, fill):
-    """
-        Takes a FillEvent object and updates the holdings matrix
-        to reflect the holdings value.
-        
-        Parameters:
-        fill - The FillEvent object to update the holdings with.
         """
+            Takes a FillEvent object and updates the holdings matrix
+            to reflect the holdings value.
+        
+            Parameters:
+            fill - The FillEvent object to update the holdings with.
+            """
         # Check whether the fill is a buy or sell
         fill_dir = 0
         if fill.direction == 'BUY':
@@ -186,13 +186,13 @@ class NaivePortfolio(Portfolio):
 
 
     def update_fill(self, event):
-    """
-        Updates the portfolio current positions and holdings
-        from a FillEvent.
         """
+            Updates the portfolio current positions and holdings
+            from a FillEvent.
+            """
         if event.type == 'FILL':
-        self.update_positions_from_fill(event)
-        self.update_holdings_from_fill(event)
+            self.update_positions_from_fill(event)
+            self.update_holdings_from_fill(event)
         
         
     def generate_naive_order(self, signal):
@@ -227,10 +227,10 @@ class NaivePortfolio(Portfolio):
 
 
     def update_signal(self, event):
-    """
-        Acts on a SignalEvent to generate new orders 
-        based on the portfolio logic.
         """
+            Acts on a SignalEvent to generate new orders
+            based on the portfolio logic.
+            """
         if event.type == 'SIGNAL':
             order_event = self.generate_naive_order(event)
             self.events.put(order_event)
@@ -248,10 +248,10 @@ class NaivePortfolio(Portfolio):
         self.equity_curve = curve
 
     def output_summary_stats(self):
-    """
-        Creates a list of summary statistics for the portfolio such
-        as Sharpe Ratio and drawdown information.
         """
+            Creates a list of summary statistics for the portfolio such
+            as Sharpe Ratio and drawdown information.
+            """
         total_return = self.equity_curve['equity_curve'][-1]
         returns = self.equity_curve['returns']
         pnl = self.equity_curve['equity_curve']
