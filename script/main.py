@@ -1,7 +1,17 @@
 # Declare the components with respective parameters
-bars = DataHandler(..)
-strategy = Strategy(..)
-port = Portfolio(..)
+import sys
+
+# You need to change this to your directory
+sys.path.append("Users/Simo/Documents/Interactive-Broker/IbPy")
+
+import event,data,strategy,portfolio,execution,time,Queue
+
+events ＝ Queue.Queue()
+events.put(MarketEvent())
+symbol_list = ["IBM"]
+bars = DataHandler(events,"",symbol_list)   #(self, events, csv_dir, symbol_list)
+strategy = Strategy(bars,events) #(self, bars, events)
+port = Portfolio(bars,events,)   #(self, bars, events, start_date, initial_capital=100000.0)
 broker = ExecutionHandler(..)
 
 while True:
