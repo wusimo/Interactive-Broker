@@ -2,7 +2,7 @@
 import sys
 
 # You need to change this to your directory
-sys.path.append("Users/Simo/Documents/Interactive-Broker/IbPy")
+sys.path.append("../IbPy")
 
 import event,data,strategy,portfolio,execution,time,Queue
 
