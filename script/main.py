@@ -31,16 +31,21 @@ while True:
             if event is not None:
                 if event.type == 'MARKET':
                     strategy.calculate_signals(event)
+                    print "Market Event"
                     port.update_timeindex(event)
+                    print "Portfolio Update"
                 
                 elif event.type == 'SIGNAL':
                     port.update_signal(event)
-                
+                    print "Portfolio Event"
+
                 elif event.type == 'ORDER':
                     broker.execute_order(event)
+                    print "Order Event"
                 
                 elif event.type == 'FILL':
                     port.update_fill(event)
-
-# 10-Minute heartbeat
-time.sleep(10*60)
+                    print "Order Done"
+            time.sleep(3)
+    # 10-Minute heartbeat
+    time.sleep(10*60)
