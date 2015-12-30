@@ -7,7 +7,6 @@ sys.path.append("../IbPy")
 import event,data,strategy,portfolio,execution,time,Queue
 
 events = Queue.Queue()
-events.put(event.MarketEvent())
 symbol_list = ["chart"]
 bars = data.HistoricCSVDataHandler(events,"../",symbol_list)   #(self, events, csv_dir, symbol_list)
 strategy = strategy.BuyAndHoldStrategy(bars,events) #(self, bars, events)
