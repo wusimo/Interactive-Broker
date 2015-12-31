@@ -305,8 +305,6 @@ class NaivePortfolio(Portfolio):
         return order
 
 
-
-
     def update_signal(self, event):
         """
             Acts on a SignalEvent to generate new orders
@@ -315,8 +313,7 @@ class NaivePortfolio(Portfolio):
         if event.type == 'SIGNAL':
             order_event = self.generate_simple_order(event)
             self.events.put(order_event)
-        
-        
+      
     def create_equity_curve_dataframe(self):
         """
             Creates a pandas DataFrame from the all_holdings
