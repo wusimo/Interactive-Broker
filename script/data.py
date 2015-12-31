@@ -68,7 +68,6 @@ class HistoricCSVDataHandler(DataHandler):
         self.symbol_data = {}
         self.latest_symbol_data = {}
         self.continue_backtest = True
-        
         self._open_convert_csv_files()
     
     
@@ -106,7 +105,7 @@ class HistoricCSVDataHandler(DataHandler):
     def _get_new_bar(self, symbol):
         """
             Returns the latest bar from the data feed as a tuple of
-            (sybmbol, datetime, open, low, high, close, volume).
+            (sybmbol, datetime, open, high, low, close, volume).
             """
         for b in self.symbol_data[symbol]:
             yield tuple([symbol, datetime.datetime.strptime(b[0], '%Y-%m-%d'),

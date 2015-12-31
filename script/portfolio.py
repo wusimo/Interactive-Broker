@@ -6,7 +6,7 @@ import pandas as pd
 import Queue
 
 from abc import ABCMeta, abstractmethod
-from math import floor
+from math import floor, ceil
 
 from event import FillEvent, OrderEvent
 from performance import create_sharpe_ratio, create_drawdowns
@@ -35,6 +35,7 @@ class Portfolio(object):
             from a FillEvent.
             """
         raise NotImplementedError("Should implement update_fill()")
+
 
 
 class NaivePortfolio(Portfolio):
@@ -210,7 +211,15 @@ class NaivePortfolio(Portfolio):
         direction = signal.signal_type
         strength = signal.strength
         
-        mkt_quantity = floor(100 * strength)
+
+        if strength == "strong":
+            mkt_quantity = 10
+        elif strength == "mild":
+            mkt_quantity = 5
+        elif strength == "weak":
+            mkt_quantity = 2
+        
+        #mkt_quantity = floor(100 * strength)  
         cur_quantity = self.current_positions[symbol]
         order_type = 'MKT'
         
@@ -226,13 +235,85 @@ class NaivePortfolio(Portfolio):
         return order
 
 
+    def generate_simple_order(self, signal):
+        """
+        A little more complicated than the naive one. The order size is decided based
+        on the following criterion
+        1. For any security, its holding proportion cannot exceed 40 percent of the total capital
+        2. For cash, we always make sure it accounts for at least 30 percent of the total capital
+        3. Only send Market order
+        """
+        order = None
+        
+        symbol = signal.symbol
+        direction = signal.signal_type
+        strength = signal.strength
+
+        ## Decide order size
+        # First stage: only consider signal strength
+        if strength == "strong":
+            mkt_quantity = 10
+        elif strength == "mild":
+            mkt_quantity = 5
+        elif strength == "weak":
+            mkt_quantity = 2
+
+        cur_position = self.current_positions[symbol]
+        cur_holding = self.current_holdings[symbol]
+        cur_capital = self.all_holdings[-1]['total']    
+
+        if cur_position != 0:
+            # Second stage: make sure absolute holding of the current security
+            # does not exceed 40 percent of the total capital
+            if direction == "LONG":
+                tmp_position = cur_position + mkt_quantity
+            elif direction == "SHORT":
+                tmp_position = cur_position - mkt_quantity
+
+            tmp_holding = float(tmp_position) / cur_position * cur_holding
+            tmp_ratio = tmp_holding / cur_capital # do not consider commission here, and assume no slippage
+                                                   # so capital won't change, equals to current capital
+            if tmp_ratio > 0.4:
+                mkt_quantity = floor(tmp_position * 0.4 / tmp_ratio) - cur_position # this order quantity will
+                                                                                    # make the proportion close
+                                                                                    # to 40%
+            elif tmp_ratio < -0.4:
+                mkt_quantity = cur_position - ceil(tmp_position * 0.4 / abs(tmp_ratio)) # same as above
+
+
+            # Third stage: make sure cash accounts at least 30 percent of the total capital
+            # since if we are shorting, cash will always increase, so only need to check the
+            # "longing" situation
+            if direction == "LONG":
+                cur_cash = self.all_holdings[-1]['cash']
+                tmp_cash = cur_cash - mkt_quantity/cur_position*cur_holding
+
+                tmp_ratio = tmp_cash / cur_capital
+                if tmp_ratio < 0.3:
+                    # this order quantity will make the cash accounts close to 30% of the total capital
+                    mkt_quantity = floor((cur_cash - cur_capital*0.3) * (cur_position / cur_holding))
+
+
+        ## Generate order
+        order_type = 'MKT'
+
+        if direction == 'LONG':
+            order = OrderEvent(symbol, order_type, mkt_quantity, 'BUY')
+        elif direction == 'SHORT':
+            order = OrderEvent(symbol, order_type, mkt_quantity, 'SELL')
+
+        return order
+
+
+
+
     def update_signal(self, event):
         """
             Acts on a SignalEvent to generate new orders
             based on the portfolio logic.
             """
         if event.type == 'SIGNAL':
-            order_event = self.generate_naive_order(event)
+            order_event = self.generate_simple_order(event)
             self.events.put(order_event)
         
         
@@ -264,4 +345,3 @@ class NaivePortfolio(Portfolio):
                 ("Max Drawdown", "%0.2f%%" % (max_dd * 100.0)),
                 ("Drawdown Duration", "%d" % dd_duration)]
         return stats
-
