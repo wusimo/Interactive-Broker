@@ -105,7 +105,7 @@ class technical_RSI(Strategy):
         self.events = events
 
         # Initialize the holding status to False
-        self.boutght = self._calculate_initial_bought()
+        self.bought = self._calculate_initial_bought()
 
 
     def _calculate_initial_bought(self):

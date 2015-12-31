@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[3]:
+# In[5]:
 
 import event, data, strategy, portfolio, execution, time, Queue
 
@@ -60,8 +60,14 @@ if mode == "Backtesting":
                         port.update_fill(event)
                         print "Order Done"
                 
-        # 1-Second heartbeat, accelerate backtesting
-        time.sleep(1)
+        # 0.1-Second heartbeat, accelerate backtesting
+        time.sleep(0.1)
+        
+    # performace evaluation
+    port.create_equity_curve_dataframe()
+    performace_stats = port.output_summary_stats()
+    print performace_stats
+    
 elif mode == "Realtime":
     print "Let's merge your code here"
 
