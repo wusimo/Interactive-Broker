@@ -5,8 +5,7 @@
 
 import event, data, strategy, portfolio, execution, time, Queue, ibexecution
 
-mode = "Realtime"
-# bugfix
+mode = "Backtesting"
 
 if mode == "Backtesting":
     ##-------------Initialization-------------------------------------------
