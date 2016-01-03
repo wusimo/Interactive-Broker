@@ -183,8 +183,9 @@ class NaivePortfolio(Portfolio):
         self.current_holdings[fill.symbol] += cost
         self.current_holdings['commission'] += fill.commission
         self.current_holdings['cash'] -= (cost + fill.commission)
-        self.current_holdings['total'] -= (cost + fill.commission)
-
+        #self.current_holdings['total'] -= (cost + fill.commission)
+        self.current_holdings['total'] -= fill.commission # the total capital only lost the commission 
+                                                          # at the very moment an order is filled
 
     def update_fill(self, event):
         """

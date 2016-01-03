@@ -130,14 +130,21 @@ class technical_RSI(Strategy):
                 # Wait until at least "periods"+1 time periods market data is available
                 if len(bars) == periods+1:
                     # Calculate RSI
-                    close_price = [x[4] for x in bars] # close price for "periods"+1 periods
+                    close_price = [x[5] for x in bars] # close price for "periods"+1 periods
                     close_price_diff = [close_price[i] - close_price[i-1] for i in range(1, periods+1)]
                     ups_ = [x for x in close_price_diff if x > 0]
                     drops_ = [x for x in close_price_diff if x < 0]
                     ups_total = sum(ups_)
                     drops_total = sum(drops_)
-                    RS = ups_total / drops_total
-                    RSI = 100 * RS/(1+RS) # This is the RSI
+
+                    if drops_total == 0 and ups_total == 0: # close prices for the last "periods" + 1 periods
+                                                            # haven't changed at all. Do not send signal, wait
+                        RSI = 50 
+                    elif drops_total == 0 and ups_total != 0:
+                        RSI = 100
+                    else:
+                        RS = ups_total / drops_total
+                        RSI = 100 * RS/(1+RS) # This is the RSI
 
                     # Calculate the direction and strenght of the signal
                     if RSI >= 70 and RSI < 80:
