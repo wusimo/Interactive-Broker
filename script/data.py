@@ -108,9 +108,11 @@ class HistoricCSVDataHandler(DataHandler):
             (sybmbol, datetime, open, high, low, close, volume).
             """
         for b in self.symbol_data[symbol]:
-            yield tuple([symbol, datetime.datetime.strptime(b[0], '%Y-%m-%d'),
+            yield tuple([symbol, datetime.strptime(b[0], '%Y-%m-%d'),
                          b[1][0], b[1][1], b[1][2], b[1][3], b[1][4]])
         #used to be:%Y-%m-%d %H:%M:%S
+        # Made some change on Jan-3-2016, changed datetime.datetime.strptime to
+        # datetime.strptime. Must due to the update of python library
         
         
     def get_latest_bars(self, symbol, N=1):
