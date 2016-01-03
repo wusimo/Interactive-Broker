@@ -1,6 +1,8 @@
 from strategy import Strategy
 from event import SignalEvent
 
+import numpy as np
+
 class RSI(Strategy):
     """
     Relative Strength Index strategy 
@@ -76,4 +78,73 @@ class RSI(Strategy):
                     # Only when RSI is less than or equal to 30, or greater than or equal to
                     # 70, a trading signal will be triggered
                     if RSI <= 30 or RSI >= 70:
+                        self.events.put(signal)
+
+
+
+class Mean_Reversion(Strategy):
+    """
+    Mean Reversion is a very common class of strategies in trading. 
+    It assumes that the price of a stock tends to converge to its 
+    historical average.  
+    Currently, we implement a simple mean reversion trading strategy,
+    called Bollinger Band. In practice, a lot of constrains are added
+    to Bollinger Band to construct accurate signals.
+    """
+
+    def __init__(self, bars, events):
+        """
+        Initialises the strategy,
+        Params:
+        bars: The DataHandler object that provides bar information
+        events: The Event Queue object
+        """
+        self.bars = bars
+        self.symbol_list = self.bars.symbol_list
+        self.events = events
+
+        # Initialize the holding status to False
+        self.bought = self._calculate_initial_bought()
+
+
+    def _calculate_initial_bought(self):
+        """
+        Set the holding status to False for all symbols
+        """
+        bought = {}
+        for s in self.symbol_list:
+            bought[s] =  False
+        return bought
+
+ 
+    def calculate_signals(self, event, periods=20, width=2):
+        """
+        params:
+        event: 
+        periods: parameter of Bollinger Band, number of periods, 
+                 usually use "day" as the unit of period
+        width: width of band
+        Very few constrains is added to Bollinger Band for now
+        """
+        if event.type == "MARKET":
+            for s in self.symbol_list:
+                bars = self.bars.get_latest_bars(s, periods)
+                # Wait until at least "periods" time periods market data is available
+                if len(bars) == periods:
+                    close_price = [x[5] for x in bars] # close price for "periods" periods 
+
+                    # Currently, the three bands are scalers. In the future, we will modify 
+                    # the code to extend them to vectors, for purpose of accurate signals
+                    mid_band = np.mean(close_price) # middle band
+                    std = np.std(close_price)
+                    upper_band = mid_band + width*std # upper band
+                    lower_band = mid_band - width*std # lower band
+
+                    curr_price = close_price[-1] # current price
+
+                    if curr_price > upper_band:
+                        signal = SignalEvent(bars[0][0], bars[0][1], 'SHORT', "strong")
+                        self.events.put(signal)
+                    elif curr_price < lower_band:
+                        signal = SignalEvent(bars[0][0], bars[0][1], 'LONG', "strong")
                         self.events.put(signal)

@@ -19,7 +19,7 @@ if mode == "Backtesting":
     # (self, events, csv_dir, symbol_list)
     bars = data.HistoricCSVDataHandler(events, rootpath, symbol_list) 
 
-    strategy = TechnicalStrategies.RSI(bars, events) #(self, bars, events)
+    strategy = TechnicalStrategies.Mean_Reversion(bars, events) #(self, bars, events)
 
     # (self, bars, events, start_date, initial_capital=100000.0)
     port = PortfolioWithSimpleRM.SimplePortfolio(bars, events, "12-5-2014", 10000000)  
@@ -80,7 +80,7 @@ elif mode == "Realtime":
     # (self, events, csv_dir, symbol_list)
     bars = data.RealTimeDataHandler(events, symbol_list)
     
-    strategy = TechnicalStrategies.RSI(bars, events) #(self, bars, events)
+    strategy = TechnicalStrategies.Mean_Reversion(bars, events) #(self, bars, events)
     
     # (self, bars, events, start_date, initial_capital=100000.0)
     port = PortfolioWithSimpleRM.SimplePortfolio(bars, events, "12-5-2014", 10000000)
