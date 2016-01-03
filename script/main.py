@@ -1,9 +1,9 @@
 
 # coding: utf-8
 
-# In[5]:
+# In[1]:
 
-import event, data, strategy, portfolio, execution, time, Queue,ibexecution
+import event, data, strategy, portfolio, execution, time, Queue, ibexecution
 
 mode = "Realtime"
 
@@ -13,7 +13,7 @@ if mode == "Backtesting":
     events = Queue.Queue()
     
     # You need to change this to your directory
-    rootpath = "../"
+    rootpath = "C:/Users/Ruimin/Anaconda2/IBtrading/"
     symbol_list = ["chart"]
     # (self, events, csv_dir, symbol_list)
     bars = data.HistoricCSVDataHandler(events, rootpath, symbol_list) 
@@ -75,7 +75,7 @@ elif mode == "Realtime":
     events = Queue.Queue()
     
     # You need to change this to your directory
-    rootpath = "../"
+    rootpath = "C:/Users/Ruimin/Anaconda2/IBtrading/"
     symbol_list = ["SPY"]
     # (self, events, csv_dir, symbol_list)
     bars = data.RealTimeDataHandler(events, symbol_list)
@@ -121,7 +121,7 @@ elif mode == "Realtime":
                         print "Order Done"
 
 # 0.1-Second heartbeat, accelerate backtesting
-        time.sleep(600)
+        time.sleep(60)
 
 # performace evaluation
     port.create_equity_curve_dataframe()
@@ -129,6 +129,7 @@ elif mode == "Realtime":
     print performace_stats
 
 
+# In[ ]:
 
 
 

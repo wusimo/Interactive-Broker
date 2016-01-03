@@ -1,7 +1,7 @@
 import datetime
 import time
 import sys
-sys.path.append("/Users/Simo/Documents/Interactive-Broker/IbPy")
+sys.path.append("C:\Users\Ruimin\Anaconda2\IBtrading\IbPy")
 from ib.ext.Contract import Contract
 from ib.ext.Order import Order
 from ib.opt import ibConnection, message

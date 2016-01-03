@@ -257,7 +257,7 @@ class RealTimeDataHandler(DataHandler):
             """
         #scrapy here
         c = GoogleFinanceAPI()
-        quote = c.get(symbol,"600","10m")
+        quote = c.get(symbol,"60","1m")
         print(symbol)
         return tuple([symbol, datetime.now(),
                     float(quote.splitlines()[8].split(",")[4]), float(quote.splitlines()[8].split(",")[3]),
