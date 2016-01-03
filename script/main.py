@@ -1,9 +1,10 @@
-
 # coding: utf-8
 
-# In[1]:
-
-import event, data, strategy, portfolio, execution, time, Queue, ibexecution
+import time, Queue
+import event, data
+import strategy, TechnicalStrategies
+import portfolio, PortfolioWithSimpleRM
+import execution, ibexecution
 
 mode = "Backtesting"
 
@@ -18,10 +19,10 @@ if mode == "Backtesting":
     # (self, events, csv_dir, symbol_list)
     bars = data.HistoricCSVDataHandler(events, rootpath, symbol_list) 
 
-    strategy = strategy.technical_RSI(bars, events) #(self, bars, events)
+    strategy = TechnicalStrategies.Mean_Reversion(bars, events) #(self, bars, events)
 
     # (self, bars, events, start_date, initial_capital=100000.0)
-    port = portfolio.NaivePortfolio(bars, events, "12-5-2014", 10000000)  
+    port = PortfolioWithSimpleRM.SimplePortfolio(bars, events, "12-5-2014", 10000000)  
 
     broker = execution.SimulatedExecutionHandler(events)
 
@@ -75,15 +76,14 @@ elif mode == "Realtime":
     events = Queue.Queue()
     
     # You need to change this to your directory
-    rootpath = "C:/Users/Ruimin/Anaconda2/IBtrading/"
     symbol_list = ["SPY"]
     # (self, events, csv_dir, symbol_list)
     bars = data.RealTimeDataHandler(events, symbol_list)
     
-    strategy = strategy.technical_RSI(bars, events) #(self, bars, events)
+    strategy = TechnicalStrategies.Mean_Reversion(bars, events) #(self, bars, events)
     
     # (self, bars, events, start_date, initial_capital=100000.0)
-    port = portfolio.NaivePortfolio(bars, events, "12-5-2014", 10000000)
+    port = PortfolioWithSimpleRM.SimplePortfolio(bars, events, "12-5-2014", 10000000)
     
     #broker = execution.SimulatedExecutionHandler(events)
     broker = ibexecution.IBExecutionHandler(events)
@@ -120,16 +120,14 @@ elif mode == "Realtime":
                         port.update_fill(event)
                         print "Order Done"
 
-# 0.1-Second heartbeat, accelerate backtesting
+        # 0.1-Second heartbeat, accelerate backtesting
         time.sleep(60)
 
-# performace evaluation
+    # performace evaluation
     port.create_equity_curve_dataframe()
     performace_stats = port.output_summary_stats()
     print performace_stats
 
-
-# In[ ]:
 
 
 
